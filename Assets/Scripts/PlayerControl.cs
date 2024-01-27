@@ -5,10 +5,12 @@ public class PlayerControl : MonoBehaviour {
     public bool scary = true;
     public float not_scary_since;
     SpriteRenderer sprite;
+    Animator animator;
 
     // Start is called before the first frame update
     void Start() {
-        sprite = GetComponent<SpriteRenderer>();    
+        sprite = GetComponent<SpriteRenderer>();   
+        animator = GetComponent<Animator>();
     }
 
     // Update is called once per frame
@@ -16,7 +18,10 @@ public class PlayerControl : MonoBehaviour {
         var x = Input.GetAxisRaw("Horizontal");
         var y = Input.GetAxisRaw("Vertical");
         if (x != 0 || y != 0) {
+            animator.SetBool("is_walking", true);
             Move(x, y);
+        } else {
+            animator.SetBool("is_walking", false);
         }
         if (scary) {
             sprite.color = new Color(0, 1, 0);
@@ -29,7 +34,9 @@ public class PlayerControl : MonoBehaviour {
     }
 
     private void Move(float x, float y) {
-        sprite.flipX = x < 0;
+        if (x != 0) {
+            sprite.flipX = x < 0;
+        }
         var pos = transform.position;
         pos += new Vector3(x, y, 0);
         transform.position = Vector2.Lerp(transform.position, pos, Time.deltaTime * speed);
