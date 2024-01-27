@@ -4,6 +4,7 @@ public class PlayerControl : MonoBehaviour {
     public float speed = 1f;
     public bool scary = true;
     public float not_scary_since;
+    const int NOT_SCARY_FOR_SECONDS = 1;
     public AudioClip booClip;
     private AudioSource booSource;
     SpriteRenderer sprite;
@@ -34,7 +35,7 @@ public class PlayerControl : MonoBehaviour {
             sprite.color = new Color(0, 1, 0);
         } else {
             sprite.color = new Color(1, 1, 1);
-            if (Time.time - not_scary_since > 10) {
+            if (Time.time - not_scary_since > NOT_SCARY_FOR_SECONDS) {
                 scary = true;
             }
         }

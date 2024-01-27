@@ -16,6 +16,9 @@ public class VictimControl : MonoBehaviour {
     public bool stunned = false;
     public float stunned_since;
     public GameObject debug_object = null;
+    const int SCARED_SECONDS = 2;
+    const float DEFAULT_SPEED = 1.5f;
+    const float SCARED_SPEED = 2.5f;
     GameObject path_point = null;
     public bool leaving_path_point = false;
     SpriteRenderer sprite;
@@ -30,6 +33,7 @@ public class VictimControl : MonoBehaviour {
         player = GameObject.Find("Player"); 
         scaredSource = gameObject.AddComponent<AudioSource>();
         scaredSource.clip = scaredClip;
+        scaredSource.volume = 0.2f;
     }
 
     // Update is called once per frame
@@ -50,7 +54,7 @@ public class VictimControl : MonoBehaviour {
         }
         float x = dir == 0 ? 1 : dir == 180 ? -1 : 0;
         float y = dir == 90 ? 1 : dir == 270 ? -1 : 0;
-        speed = scared ? 3 : stunned ? 0 : 1;
+        speed = scared ? SCARED_SPEED : stunned ? 0 : DEFAULT_SPEED;
         sprite.flipX = x < 0;
         var pos = transform.position;
         if (on_path_point && !leaving_path_point) {
@@ -60,7 +64,7 @@ public class VictimControl : MonoBehaviour {
                 dir = directions_[Random.Range(0, directions_.Length)];
                 leaving_path_point = true;
             }
-            transform.position = Vector2.Lerp(transform.position, pos, Time.deltaTime * 2 * speed);
+            transform.position = Vector2.Lerp(transform.position, pos, Time.deltaTime * speed);
         } else {
             pos += new Vector3(x, y, 0);
             transform.position = Vector2.Lerp(transform.position, pos, Time.deltaTime * speed);
@@ -104,7 +108,7 @@ public class VictimControl : MonoBehaviour {
 
     void FixedUpdate() {
         if (scared) {
-            if (Time.time - scared_since > 3) {
+            if (Time.time - scared_since > SCARED_SECONDS) {
                 scared = false;
                 animator.SetBool("is_scared", false);
             }
