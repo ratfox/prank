@@ -1,9 +1,15 @@
 using UnityEngine;
 
 public class VictimControl : MonoBehaviour {
+    const int SCARED_SECONDS = 2;
+    const float DEFAULT_SPEED = 1.5f;
+    const float SCARED_SPEED = 2.5f;
+    const int MIN_SCARY_DISTANCE = 3;
+    const int MIN_WALK_DISTANCE = 3;
+    const int VISION_DISTANCE = 5;
+
     public float speed = 1f;
-    public int dir = 0;
-    public bool on_path_point = false;
+    public Vector2 direction;
     public GameObject player = null;
     public float x = 0;
     public AudioClip scaredClip;
@@ -16,12 +22,6 @@ public class VictimControl : MonoBehaviour {
     public bool stunned = false;
     public float stunned_since;
     public GameObject debug_object = null;
-    const int SCARED_SECONDS = 2;
-    const float DEFAULT_SPEED = 1.5f;
-    const float SCARED_SPEED = 2.5f;
-    const int MIN_SCARY_DISTANCE = 3;
-    GameObject path_point = null;
-    public bool leaving_path_point = false;
     SpriteRenderer sprite;
     Animator animator;
     Collider2D my_collider;
@@ -35,77 +35,91 @@ public class VictimControl : MonoBehaviour {
         scaredSource = gameObject.AddComponent<AudioSource>();
         scaredSource.clip = scaredClip;
         scaredSource.volume = 0.2f;
+        direction = GetRandomDirection();
+    }
+    
+    Vector2 GetRandomDirection() {
+        Vector2[] directions = { Vector2.up, Vector2.down, Vector2.left, Vector2.right };
+        Vector2 randomDirection = Vector2.zero;
+        // Shuffle the array to randomize the order of directions
+        ShuffleArray(directions);
+        foreach (Vector2 dir in directions)
+        {
+            // Cast a ray in the current direction
+            RaycastHit2D hit = Physics2D.Raycast(transform.position, dir, MIN_WALK_DISTANCE);
+            // Check if there are no collidable objects within the specified distance
+            if (hit.collider == null)
+            {
+                randomDirection = dir;
+                break;
+            }
+        }
+        return randomDirection;
+    }
+
+    // Helper method to shuffle the array
+    private void ShuffleArray<T>(T[] array)
+    {
+        int n = array.Length;
+        for (int i = 0; i < n; i++)
+        {
+            int r = i + Random.Range(0, n - i);
+            T temp = array[r];
+            array[r] = array[i];
+            array[i] = temp;
+        }
+    }
+
+    void updatePic() {
+        if (direction == Vector2.up) {
+            animator.SetBool("is_back", true);
+            animator.SetBool("is_front", false);
+            return;
+        }
+        if (direction == Vector2.down) {
+            animator.SetBool("is_back", false);
+            animator.SetBool("is_front", true);
+            return;
+        }
+        animator.SetBool("is_front", false);
+        animator.SetBool("is_back", false);
+        if (direction == Vector2.left) {
+            sprite.flipX = true;
+        }
+        if (direction == Vector2.right) {
+            sprite.flipX = false;
+        }
     }
 
     // Update is called once per frame
     void Update() {
-        switch (dir) {
-            case 90:
-              animator.SetBool("is_front", false);
-              animator.SetBool("is_back", true);
-              break;
-            case 270:
-              animator.SetBool("is_front", true);
-              animator.SetBool("is_back", false);
-              break;
-            default:
-              animator.SetBool("is_front", false);
-              animator.SetBool("is_back", false);
-              break;
-        }
-        float x = dir == 0 ? 1 : dir == 180 ? -1 : 0;
-        float y = dir == 90 ? 1 : dir == 270 ? -1 : 0;
+        updatePic();
         speed = scared ? SCARED_SPEED : stunned ? 0 : DEFAULT_SPEED;
-        sprite.flipX = x < 0;
-        var pos = transform.position;
-        if (on_path_point && !leaving_path_point) {
-            pos = path_point.transform.position;
-            var directions_ = path_point.GetComponent<PathPoint>().directions;
-            if (Vector2.Distance(pos, transform.position) < 0.05) {
-                dir = directions_[Random.Range(0, directions_.Length)];
-                leaving_path_point = true;
-            }
-            transform.position = Vector2.Lerp(transform.position, pos, Time.deltaTime * speed);
-        } else {
-            pos += new Vector3(x, y, 0);
-            transform.position = Vector2.Lerp(transform.position, pos, Time.deltaTime * speed);
-        }
-    }
-
-    private void OnTriggerEnter2D(Collider2D collider) {
-        if (collider.gameObject.CompareTag("PathPoint")) {
-            on_path_point = true;
-            path_point = collider.gameObject;
-            leaving_path_point = false;
-        }
-    }
-
-    private void OnTriggerLeave2D(Collider2D collider) {
-        if (collider.gameObject.CompareTag("PathPoint")) {
-            on_path_point = false;
-            path_point = null;
-            leaving_path_point = false;
-        }
+        transform.Translate(direction * speed * Time.deltaTime);
     }
 
     private void OnCollisionEnter2D(Collision2D collision) {
+        if (!my_collider.enabled) {
+            return;
+        }
+        Debug.Log("intersection");
+        direction = GetRandomDirection();
         if (collision.gameObject.CompareTag("Victim")) {
             if (collision.gameObject.GetComponent<VictimControl>().scared) {
                 stunned = true;
                 animator.SetBool("is_stunned", true);
                 stunned_since = Time.time;
                 my_collider.enabled = false;
-            } else {
-                if (!scared) {
-                    dir = dir < 135 ? dir + 180 : dir - 180;
-                    if (on_path_point) {
-                        leaving_path_point = !leaving_path_point;
-                    }
-                }
             }
         }
         if (collision.gameObject.CompareTag("Player")) {
             markPlayerAsNotScary();
+        }
+    }
+
+    private void OnCollisionStay2D(Collision2D collision) {
+        if (direction == Vector2.zero) {
+            direction = GetRandomDirection();
         }
     }
 
@@ -129,45 +143,28 @@ public class VictimControl : MonoBehaviour {
         }
         // Calculate the distance from the player
         float distance = Vector2.Distance(player.transform.position, transform.position);
+        var dir_player =  player.transform.position - transform.position;
         if (distance < MIN_SCARY_DISTANCE &&
                 player.GetComponent<PlayerControl>().scary &&
                 player.GetComponent<PlayerControl>().booSource.isPlaying) {
-            getScared();
-        } 
-        var dir_player =  player.transform.position - transform.position;
-        x = dir_player.x;
-        y = dir_player.y;
-        // Cast a ray to player.
-        if ((dir_player.x > 0 && Mathf.Abs(dir_player.y) * 5 < dir_player.x && dir == 0) ||
-            (dir_player.x < 0 && Mathf.Abs(dir_player.y) * 5 < -dir_player.x && dir == 180) ||
-            (dir_player.y > 0 && Mathf.Abs(dir_player.x) * 5 < dir_player.y && dir == 90)  ||
-            (dir_player.y < 0 && Mathf.Abs(dir_player.x) * 5 < -dir_player.y && dir == 270)) {
-            RaycastHit2D hit = Physics2D.Raycast(transform.position, dir_player);
-            distance_view = Vector2.Distance(player.transform.position, transform.position);
-            if (hit.collider != null) debug_object = hit.collider.gameObject;
-            // If it hits the player
-            if (hit.collider != null && hit.collider.gameObject.CompareTag("Player")) {
-                debug = true;
-                distance_view = distance;
-                if (distance < MIN_SCARY_DISTANCE && player.GetComponent<PlayerControl>().scary) {
-                    getScared();
-                } else {
-                    markPlayerAsNotScary();
-                }
+            getScared(dir_player);
+        }
+        RaycastHit2D hit = Physics2D.Raycast(transform.position, direction, VISION_DISTANCE);
+        if (hit.collider != null && hit.collider.gameObject.CompareTag("Player")) {
+            if (distance < MIN_SCARY_DISTANCE) {
+                getScared(dir_player);
+            } else {
+                markPlayerAsNotScary();
             }
         }
     }
 
-    private void getScared() {
+    private void getScared(Vector2 dir_player) {
         scaredSource.Play();
         scared = true;
         animator.SetBool("is_scared", true);
         scared_since = Time.time;
-        dir = dir < 135 ? dir + 180 : dir - 180;
         markPlayerAsNotScary();
-        if (on_path_point) {
-            leaving_path_point = !leaving_path_point;
-        }
     }
 
     private void markPlayerAsNotScary() {
