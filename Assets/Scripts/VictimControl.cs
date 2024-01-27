@@ -117,6 +117,18 @@ public class VictimControl : MonoBehaviour {
         }
     }
 
+    private void OnTriggerEnter2D(Collider2D collider) {
+        if (scared && collider.gameObject.CompareTag("Trap")) {
+            stunned = true;
+            animator.SetBool("is_stunned", true);
+            stunned_since = Time.time;
+            my_collider.enabled = false;
+            Destroy(collider.gameObject);
+            player.GetComponent<PlayerControl>().item_exists = false;
+            player.GetComponent<PlayerControl>().new_item_since = Time.time;
+        }
+    }
+
     void FixedUpdate() {
         if (direction == Vector2.zero) {
             direction = GetRandomDirection();

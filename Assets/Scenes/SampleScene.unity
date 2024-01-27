@@ -1185,10 +1185,11 @@ MonoBehaviour:
   new_item_since: 0
   booClip: {fileID: 8300000, guid: 3a5b940f6bf304889b47feb2742f4510, type: 3}
   booSource: {fileID: 0}
-  mask_created: 0
-  item_created: 0
+  mask_exists: 0
+  item_exists: 0
   pumpkinPrefab: {fileID: 5082958546597265177, guid: 4a4a1ee154ee74318a59975082ad1d64, type: 3}
-  bananaPrefab: {fileID: 3764578614440071814, guid: 25a050a4a593e4faeaaeed00057dde3f, type: 3}
+  bananaPrefab: {fileID: 6132959614888111519, guid: 51925dd4d61d44b2cb4dae9260929e5c, type: 3}
+  bananaPeelPrefab: {fileID: 3764578614440071814, guid: 25a050a4a593e4faeaaeed00057dde3f, type: 3}
   mask: {fileID: 0}
   item: {fileID: 0}
 --- !u!212 &2068053240

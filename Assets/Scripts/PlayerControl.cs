@@ -8,10 +8,11 @@ public class PlayerControl : MonoBehaviour {
     const int NOT_SCARY_FOR_SECONDS = 5;
     public AudioClip booClip;
     public AudioSource booSource;
-    public bool mask_created = false;
-    public bool item_created = false;
+    public bool mask_exists = false;
+    public bool item_exists = false;
     public GameObject pumpkinPrefab;
     public GameObject bananaPrefab;
+    public GameObject bananaPeelPrefab;
     public GameObject mask = null;
     public GameObject item = null;
     SpriteRenderer sprite;
@@ -34,6 +35,12 @@ public class PlayerControl : MonoBehaviour {
         var y = Input.GetAxisRaw("Vertical");
         if (Input.GetKeyDown(KeyCode.Space)) {
             booSource.Play();
+            if (item != null) {
+                Destroy(item);
+                item = null;
+                var peel = Instantiate(bananaPeelPrefab);
+                peel.transform.position = transform.position;
+            }
         }
         if (x != 0 || y != 0) {
             animator.SetBool("is_walking", true);
@@ -56,22 +63,22 @@ public class PlayerControl : MonoBehaviour {
     }
 
     void FixedUpdate() {
-        if (!mask_created) {
+        if (!mask_exists) {
             if (!scary && Time.time - not_scary_since > TIME_UNTIL_PUMPKIN) {
                 var points_ = GameObject.FindGameObjectsWithTag("PathPoint");
                 var point_ = points_[Random.Range(0, points_.Length)];
                 var mask_ = Instantiate(pumpkinPrefab);
                 mask_.transform.position = point_.transform.position;
-                mask_created = true;
+                mask_exists = true;
                 new_item_since = Time.time;
             }
         } else {
-            if (!item_created && Time.time - new_item_since > TIME_UNTIL_ITEM) {
+            if (!item_exists && Time.time - new_item_since > TIME_UNTIL_ITEM) {
                 var points_ = GameObject.FindGameObjectsWithTag("PathPoint");
                 var point_ = points_[Random.Range(0, points_.Length)];
                 var item_ = Instantiate(bananaPrefab);
                 item_.transform.position = point_.transform.position;
-                item_created = true;
+                item_exists = true;
                 new_item_since = Time.time;
             }
         }
@@ -82,6 +89,7 @@ public class PlayerControl : MonoBehaviour {
         not_scary_since = Time.time;
         Destroy(mask);
         mask = null;
+        mask_exists = false;
     }
 
     private void OnTriggerEnter2D(Collider2D collider) {
@@ -90,14 +98,11 @@ public class PlayerControl : MonoBehaviour {
             mask.transform.parent = transform;
             mask.transform.localPosition = new(0, 0.4f);
             scary = true;
-            mask_created = false;
         }
         if (collider.gameObject.CompareTag("Item")) {
             item = collider.gameObject;
             item.transform.parent = transform;
             item.transform.localPosition = new(0, 0);
-            item_created = false;
         }
-    }
-    
+    }    
 }
