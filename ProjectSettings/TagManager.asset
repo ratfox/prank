@@ -7,6 +7,7 @@ TagManager:
   - PathPoint
   - Victim
   - Mask
+  - Item
   layers:
   - Default
   - TransparentFX

@@ -4,16 +4,21 @@ public class PlayerControl : MonoBehaviour {
     public float speed = 1f;
     public bool scary = false;
     public float not_scary_since;
+    public float new_item_since;
     const int NOT_SCARY_FOR_SECONDS = 5;
     public AudioClip booClip;
     public AudioSource booSource;
     public bool mask_created = false;
+    public bool item_created = false;
     public GameObject pumpkinPrefab;
+    public GameObject bananaPrefab;
     public GameObject mask = null;
+    public GameObject item = null;
     SpriteRenderer sprite;
     Animator animator;
 
     const int TIME_UNTIL_PUMPKIN = 3;
+    const int TIME_UNTIL_ITEM = 5;
 
     // Start is called before the first frame update
     void Start() {
@@ -51,12 +56,24 @@ public class PlayerControl : MonoBehaviour {
     }
 
     void FixedUpdate() {
-        if (!scary && !mask_created && Time.time - not_scary_since > TIME_UNTIL_PUMPKIN) {
-            var points_ = GameObject.FindGameObjectsWithTag("PathPoint");
-            var point_ = points_[Random.Range(0, points_.Length)];
-            var mask_ = Instantiate(pumpkinPrefab);
-            mask_.transform.position = point_.transform.position;
-            mask_created = true;
+        if (!mask_created) {
+            if (!scary && Time.time - not_scary_since > TIME_UNTIL_PUMPKIN) {
+                var points_ = GameObject.FindGameObjectsWithTag("PathPoint");
+                var point_ = points_[Random.Range(0, points_.Length)];
+                var mask_ = Instantiate(pumpkinPrefab);
+                mask_.transform.position = point_.transform.position;
+                mask_created = true;
+                new_item_since = Time.time;
+            }
+        } else {
+            if (!item_created && Time.time - new_item_since > TIME_UNTIL_ITEM) {
+                var points_ = GameObject.FindGameObjectsWithTag("PathPoint");
+                var point_ = points_[Random.Range(0, points_.Length)];
+                var item_ = Instantiate(bananaPrefab);
+                item_.transform.position = point_.transform.position;
+                item_created = true;
+                new_item_since = Time.time;
+            }
         }
     }
 
@@ -74,6 +91,12 @@ public class PlayerControl : MonoBehaviour {
             mask.transform.localPosition = new(0, 0.4f);
             scary = true;
             mask_created = false;
+        }
+        if (collider.gameObject.CompareTag("Item")) {
+            item = collider.gameObject;
+            item.transform.parent = transform;
+            item.transform.localPosition = new(0, 0);
+            item_created = false;
         }
     }
     
