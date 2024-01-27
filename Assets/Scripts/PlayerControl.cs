@@ -12,6 +12,8 @@ public class PlayerControl : MonoBehaviour {
     SpriteRenderer sprite;
     Animator animator;
 
+    const int TIME_UNTIL_PUMPKIN = 3;
+
     // Start is called before the first frame update
     void Start() {
         sprite = GetComponent<SpriteRenderer>();   
@@ -53,7 +55,7 @@ public class PlayerControl : MonoBehaviour {
     }
 
     void FixedUpdate() {
-        if (!scary && !mask_created && Time.time - not_scary_since > 4) {
+        if (!scary && !mask_created && Time.time - not_scary_since > TIME_UNTIL_PUMPKIN) {
             var points_ = GameObject.FindGameObjectsWithTag("PathPoint");
             var point_ = points_[Random.Range(0, points_.Length)];
             var mask_ = Instantiate(pumpkin);
