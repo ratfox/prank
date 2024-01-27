@@ -144,14 +144,19 @@ public class VictimControl : MonoBehaviour {
                     animator.SetBool("is_scared", true);
                     scared_since = Time.time;
                     dir = dir < 135 ? dir + 180 : dir - 180;
+                    markAsNotScary();
                     if (on_path_point) {
                         leaving_path_point = !leaving_path_point;
                     }
                 } else {
-                    player.GetComponent<PlayerControl>().scary = false;
-                    player.GetComponent<PlayerControl>().not_scary_since = Time.time;
+                    markAsNotScary();
                 }
             }
         }
+    }
+
+    private void markAsNotScary() {
+        player.GetComponent<PlayerControl>().scary = false;
+        player.GetComponent<PlayerControl>().not_scary_since = Time.time;
     }
 }
