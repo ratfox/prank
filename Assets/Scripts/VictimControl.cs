@@ -4,7 +4,7 @@ public class VictimControl : MonoBehaviour {
     const int SCARED_SECONDS = 2;
     const float DEFAULT_SPEED = 1.5f;
     const float SCARED_SPEED = 2.5f;
-    const int MIN_SCARY_DISTANCE = 3;
+    const float MIN_SCARY_DISTANCE = 1.5f;
     const int MIN_WALK_DISTANCE = 3;
     const int VISION_DISTANCE = 5;
 
