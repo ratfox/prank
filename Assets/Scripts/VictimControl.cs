@@ -103,6 +103,9 @@ public class VictimControl : MonoBehaviour {
                 }
             }
         }
+        if (collision.gameObject.CompareTag("Player")) {
+            markAsNotScary();
+        }
     }
 
 
