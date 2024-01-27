@@ -4,7 +4,7 @@ public class VictimControl : MonoBehaviour {
     const int SCARED_SECONDS = 2;
     const float DEFAULT_SPEED = 1.5f;
     const float SCARED_SPEED = 2.5f;
-    const float MIN_SCARY_DISTANCE = 1.5f;
+    const float MIN_SCARY_DISTANCE = 2.5f;
     const int MIN_WALK_DISTANCE = 3;
     const int VISION_DISTANCE = 5;
 
@@ -94,7 +94,7 @@ public class VictimControl : MonoBehaviour {
     // Update is called once per frame
     void Update() {
         updatePic();
-        speed = scared ? SCARED_SPEED : stunned ? 0 : DEFAULT_SPEED;
+        speed = stunned ? 0 : scared ? SCARED_SPEED : DEFAULT_SPEED;
         transform.Translate(direction * speed * Time.deltaTime);
     }
 
@@ -115,10 +115,6 @@ public class VictimControl : MonoBehaviour {
         if (collision.gameObject.CompareTag("Player")) {
             markPlayerAsNotScary();
         }
-    }
-
-    private void OnCollisionStay2D(Collision2D collision) {
-        Debug.Log("collision stay");
     }
 
     private void OnTriggerEnter2D(Collider2D collider) {
@@ -163,6 +159,7 @@ public class VictimControl : MonoBehaviour {
         }
         RaycastHit2D hit = Physics2D.Raycast(transform.position, direction, VISION_DISTANCE);
         if (hit.collider != null && hit.collider.gameObject.CompareTag("Player")) {
+            Debug.Log("distance " + distance);
             if (distance < MIN_SCARY_DISTANCE && player.GetComponent<PlayerControl>().scary) {
                 getScared(dir_player);
             } else {
