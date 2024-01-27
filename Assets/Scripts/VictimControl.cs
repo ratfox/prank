@@ -117,6 +117,10 @@ public class VictimControl : MonoBehaviour {
         }
     }
 
+    private void OnCollisionStay2D(Collision2D collision) {
+        Debug.Log("collision stay");
+    }
+
     private void OnTriggerEnter2D(Collider2D collider) {
         if (scared && collider.gameObject.CompareTag("Trap")) {
             stunned = true;
