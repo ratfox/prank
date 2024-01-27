@@ -4,6 +4,8 @@ public class PlayerControl : MonoBehaviour {
     public float speed = 1f;
     public bool scary = true;
     public float not_scary_since;
+    public AudioClip booClip;
+    private AudioSource booSource;
     SpriteRenderer sprite;
     Animator animator;
 
@@ -11,12 +13,17 @@ public class PlayerControl : MonoBehaviour {
     void Start() {
         sprite = GetComponent<SpriteRenderer>();   
         animator = GetComponent<Animator>();
+        booSource = gameObject.AddComponent<AudioSource>();
+        booSource.clip = booClip;
     }
 
     // Update is called once per frame
     void Update() {
         var x = Input.GetAxisRaw("Horizontal");
         var y = Input.GetAxisRaw("Vertical");
+        if (Input.GetKeyDown(KeyCode.Space)) {
+            booSource.Play();
+        }
         if (x != 0 || y != 0) {
             animator.SetBool("is_walking", true);
             Move(x, y);

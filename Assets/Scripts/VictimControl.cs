@@ -7,6 +7,7 @@ public class VictimControl : MonoBehaviour {
     public GameObject player = null;
     public float x = 0;
     public AudioClip scaredClip;
+    private AudioSource scaredSource;
     public float y = 0;
     public float distance_view = 0;
     public bool debug = false;
@@ -20,12 +21,15 @@ public class VictimControl : MonoBehaviour {
     SpriteRenderer sprite;
     Animator animator;
     Collider2D my_collider;
+
     // Start is called before the first frame update
     void Start() {
         sprite = GetComponent<SpriteRenderer>();   
         animator = GetComponent<Animator>();   
         my_collider = GetComponent<BoxCollider2D>();
         player = GameObject.Find("Player"); 
+        scaredSource = gameObject.AddComponent<AudioSource>();
+        scaredSource.clip = scaredClip;
     }
 
     // Update is called once per frame
@@ -131,9 +135,7 @@ public class VictimControl : MonoBehaviour {
                 float distance = Vector2.Distance(player.transform.position, transform.position);
                 distance_view = distance;
                 if (distance < 3 && player.GetComponent<PlayerControl>().scary) {
-                    AudioSource audioSource = gameObject.AddComponent<AudioSource>();
-                    audioSource.clip = scaredClip;
-                    audioSource.Play();
+                    scaredSource.Play();
                     scared = true;
                     animator.SetBool("is_scared", true);
                     scared_since = Time.time;
