@@ -159,7 +159,7 @@ public class VictimControl : MonoBehaviour {
         }
         RaycastHit2D hit = Physics2D.Raycast(transform.position, direction, VISION_DISTANCE);
         if (hit.collider != null && hit.collider.gameObject.CompareTag("Player")) {
-            if (distance < MIN_SCARY_DISTANCE) {
+            if (distance < MIN_SCARY_DISTANCE && player.GetComponent<PlayerControl>().scary) {
                 getScared(dir_player);
             } else {
                 markPlayerAsNotScary();
