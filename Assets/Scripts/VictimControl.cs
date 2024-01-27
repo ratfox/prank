@@ -6,6 +6,7 @@ public class VictimControl : MonoBehaviour {
     public bool on_path_point = false;
     public GameObject player = null;
     public float x = 0;
+    public AudioClip boo;
     public float y = 0;
     public float distance_view = 0;
     public bool debug = false;
@@ -130,6 +131,9 @@ public class VictimControl : MonoBehaviour {
                 float distance = Vector2.Distance(player.transform.position, transform.position);
                 distance_view = distance;
                 if (distance < 3 && player.GetComponent<PlayerControl>().scary) {
+                    AudioSource audioSource = gameObject.AddComponent<AudioSource>();
+                    audioSource.clip = boo;
+                    audioSource.Play();
                     scared = true;
                     animator.SetBool("is_scared", true);
                     scared_since = Time.time;
