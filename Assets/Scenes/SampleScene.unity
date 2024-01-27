@@ -430,7 +430,7 @@ GameObject:
   - component: {fileID: 987561210}
   - component: {fileID: 987561209}
   - component: {fileID: 987561208}
-  m_Layer: 0
+  m_Layer: 4
   m_Name: Square
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -690,7 +690,7 @@ GameObject:
   - component: {fileID: 1260808025}
   - component: {fileID: 1260808024}
   - component: {fileID: 1260808023}
-  m_Layer: 0
+  m_Layer: 4
   m_Name: Square (2)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -893,7 +893,7 @@ GameObject:
   - component: {fileID: 1729828989}
   - component: {fileID: 1729828988}
   - component: {fileID: 1729828987}
-  m_Layer: 0
+  m_Layer: 4
   m_Name: Square (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1160,7 +1160,7 @@ GameObject:
   - component: {fileID: 2068053242}
   - component: {fileID: 2068053243}
   - component: {fileID: 2068053244}
-  m_Layer: 0
+  m_Layer: 4
   m_Name: Player
   m_TagString: Player
   m_Icon: {fileID: 0}
@@ -1182,7 +1182,11 @@ MonoBehaviour:
   speed: 5
   scary: 1
   not_scary_since: 0
-  pumpkin: {fileID: 5082958546597265177, guid: 4a4a1ee154ee74318a59975082ad1d64, type: 3}
+  booClip: {fileID: 8300000, guid: 3a5b940f6bf304889b47feb2742f4510, type: 3}
+  booSource: {fileID: 0}
+  mask_created: 0
+  pumpkinPrefab: {fileID: 5082958546597265177, guid: 4a4a1ee154ee74318a59975082ad1d64, type: 3}
+  mask: {fileID: 0}
 --- !u!212 &2068053240
 SpriteRenderer:
   m_ObjectHideFlags: 0

@@ -2,13 +2,14 @@ using UnityEngine;
 
 public class PlayerControl : MonoBehaviour {
     public float speed = 1f;
-    public bool scary = true;
+    public bool scary = false;
     public float not_scary_since;
-    const int NOT_SCARY_FOR_SECONDS = 1;
+    const int NOT_SCARY_FOR_SECONDS = 5;
     public AudioClip booClip;
     public AudioSource booSource;
     public bool mask_created = false;
-    public GameObject pumpkin;
+    public GameObject pumpkinPrefab;
+    public GameObject mask = null;
     SpriteRenderer sprite;
     Animator animator;
 
@@ -35,13 +36,8 @@ public class PlayerControl : MonoBehaviour {
         } else {
             animator.SetBool("is_walking", false);
         }
-        if (scary) {
-            sprite.color = new Color(0, 1, 0);
-        } else {
-            sprite.color = new Color(1, 1, 1);
-            if (Time.time - not_scary_since > NOT_SCARY_FOR_SECONDS) {
-                scary = true;
-            }
+        if (mask != null) {
+            mask.GetComponent<SpriteRenderer>().flipX = sprite.flipX;
         }
     }
 
@@ -58,9 +54,27 @@ public class PlayerControl : MonoBehaviour {
         if (!scary && !mask_created && Time.time - not_scary_since > TIME_UNTIL_PUMPKIN) {
             var points_ = GameObject.FindGameObjectsWithTag("PathPoint");
             var point_ = points_[Random.Range(0, points_.Length)];
-            var mask_ = Instantiate(pumpkin);
+            var mask_ = Instantiate(pumpkinPrefab);
             mask_.transform.position = point_.transform.position;
             mask_created = true;
         }
     }
+
+    public void MarkAsNotScary() {
+        scary = false;
+        not_scary_since = Time.time;
+        Destroy(mask);
+        mask = null;
+    }
+
+    private void OnTriggerEnter2D(Collider2D collider) {
+        if (collider.gameObject.CompareTag("Mask")) {
+            mask = collider.gameObject;
+            mask.transform.parent = transform;
+            mask.transform.localPosition = new(0, 0.4f);
+            scary = true;
+            mask_created = false;
+        }
+    }
+    
 }

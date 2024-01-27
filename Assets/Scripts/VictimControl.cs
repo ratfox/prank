@@ -171,7 +171,6 @@ public class VictimControl : MonoBehaviour {
     }
 
     private void markPlayerAsNotScary() {
-        player.GetComponent<PlayerControl>().scary = false;
-        player.GetComponent<PlayerControl>().not_scary_since = Time.time;
+        player.GetComponent<PlayerControl>().MarkAsNotScary();
     }
 }
