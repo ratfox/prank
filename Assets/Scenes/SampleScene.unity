@@ -1182,6 +1182,7 @@ MonoBehaviour:
   speed: 5
   scary: 1
   not_scary_since: 0
+  pumpkin: {fileID: 5082958546597265177, guid: 4a4a1ee154ee74318a59975082ad1d64, type: 3}
 --- !u!212 &2068053240
 SpriteRenderer:
   m_ObjectHideFlags: 0

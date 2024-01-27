@@ -7,6 +7,8 @@ public class PlayerControl : MonoBehaviour {
     const int NOT_SCARY_FOR_SECONDS = 1;
     public AudioClip booClip;
     public AudioSource booSource;
+    public bool mask_created = false;
+    public GameObject pumpkin;
     SpriteRenderer sprite;
     Animator animator;
 
@@ -48,5 +50,15 @@ public class PlayerControl : MonoBehaviour {
         var pos = transform.position;
         pos += new Vector3(x, y, 0);
         transform.position = Vector2.Lerp(transform.position, pos, Time.deltaTime * speed);
+    }
+
+    void FixedUpdate() {
+        if (!scary && !mask_created && Time.time - not_scary_since > 4) {
+            var points_ = GameObject.FindGameObjectsWithTag("PathPoint");
+            var point_ = points_[Random.Range(0, points_.Length)];
+            var mask_ = Instantiate(pumpkin);
+            mask_.transform.position = point_.transform.position;
+            mask_created = true;
+        }
     }
 }
