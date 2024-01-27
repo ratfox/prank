@@ -19,6 +19,7 @@ public class VictimControl : MonoBehaviour {
     const int SCARED_SECONDS = 2;
     const float DEFAULT_SPEED = 1.5f;
     const float SCARED_SPEED = 2.5f;
+    const int MIN_SCARY_DISTANCE = 3;
     GameObject path_point = null;
     public bool leaving_path_point = false;
     SpriteRenderer sprite;
@@ -104,7 +105,7 @@ public class VictimControl : MonoBehaviour {
             }
         }
         if (collision.gameObject.CompareTag("Player")) {
-            markAsNotScary();
+            markPlayerAsNotScary();
         }
     }
 
@@ -115,6 +116,7 @@ public class VictimControl : MonoBehaviour {
                 scared = false;
                 animator.SetBool("is_scared", false);
             }
+            return;
         }
         if (stunned) {
             if (Time.time - stunned_since > 4) {
@@ -123,7 +125,15 @@ public class VictimControl : MonoBehaviour {
                 my_collider.enabled = true;
 
             }
+            return;
         }
+        // Calculate the distance from the player
+        float distance = Vector2.Distance(player.transform.position, transform.position);
+        if (distance < MIN_SCARY_DISTANCE &&
+                player.GetComponent<PlayerControl>().scary &&
+                player.GetComponent<PlayerControl>().booSource.isPlaying) {
+            getScared();
+        } 
         var dir_player =  player.transform.position - transform.position;
         x = dir_player.x;
         y = dir_player.y;
@@ -133,32 +143,34 @@ public class VictimControl : MonoBehaviour {
             (dir_player.y > 0 && Mathf.Abs(dir_player.x) * 5 < dir_player.y && dir == 90)  ||
             (dir_player.y < 0 && Mathf.Abs(dir_player.x) * 5 < -dir_player.y && dir == 270)) {
             RaycastHit2D hit = Physics2D.Raycast(transform.position, dir_player);
-                distance_view = Vector2.Distance(player.transform.position, transform.position);
+            distance_view = Vector2.Distance(player.transform.position, transform.position);
             if (hit.collider != null) debug_object = hit.collider.gameObject;
             // If it hits the player
             if (hit.collider != null && hit.collider.gameObject.CompareTag("Player")) {
                 debug = true;
-                // Calculate the distance from the player
-                float distance = Vector2.Distance(player.transform.position, transform.position);
                 distance_view = distance;
-                if (distance < 3 && player.GetComponent<PlayerControl>().scary) {
-                    scaredSource.Play();
-                    scared = true;
-                    animator.SetBool("is_scared", true);
-                    scared_since = Time.time;
-                    dir = dir < 135 ? dir + 180 : dir - 180;
-                    markAsNotScary();
-                    if (on_path_point) {
-                        leaving_path_point = !leaving_path_point;
-                    }
+                if (distance < MIN_SCARY_DISTANCE && player.GetComponent<PlayerControl>().scary) {
+                    getScared();
                 } else {
-                    markAsNotScary();
+                    markPlayerAsNotScary();
                 }
             }
         }
     }
 
-    private void markAsNotScary() {
+    private void getScared() {
+        scaredSource.Play();
+        scared = true;
+        animator.SetBool("is_scared", true);
+        scared_since = Time.time;
+        dir = dir < 135 ? dir + 180 : dir - 180;
+        markPlayerAsNotScary();
+        if (on_path_point) {
+            leaving_path_point = !leaving_path_point;
+        }
+    }
+
+    private void markPlayerAsNotScary() {
         player.GetComponent<PlayerControl>().scary = false;
         player.GetComponent<PlayerControl>().not_scary_since = Time.time;
     }

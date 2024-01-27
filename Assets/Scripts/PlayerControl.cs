@@ -6,7 +6,7 @@ public class PlayerControl : MonoBehaviour {
     public float not_scary_since;
     const int NOT_SCARY_FOR_SECONDS = 1;
     public AudioClip booClip;
-    private AudioSource booSource;
+    public AudioSource booSource;
     SpriteRenderer sprite;
     Animator animator;
 
