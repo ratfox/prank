@@ -105,6 +105,7 @@ MonoBehaviour:
   on_path_point: 0
   player: {fileID: 0}
   x: 0
+  scaredClip: {fileID: 8300000, guid: be16c7069ba9d4f60ad522d2bcfb6820, type: 3}
   y: 0
   distance_view: 0
   debug: 0
