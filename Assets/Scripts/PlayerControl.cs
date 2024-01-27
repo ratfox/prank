@@ -13,6 +13,8 @@ public class PlayerControl : MonoBehaviour {
     public GameObject pumpkinPrefab;
     public GameObject bananaPrefab;
     public GameObject bananaPeelPrefab;
+    public GameObject vasePrefab;
+    public GameObject vaseBrokenPrefab;
     public GameObject mask = null;
     public GameObject item = null;
     SpriteRenderer sprite;
@@ -36,10 +38,18 @@ public class PlayerControl : MonoBehaviour {
         if (Input.GetKeyDown(KeyCode.Space)) {
             booSource.Play();
             if (item != null) {
-                Destroy(item);
-                item = null;
-                var peel = Instantiate(bananaPeelPrefab);
-                peel.transform.position = transform.position;
+                if (item.name.Contains("banana")) {
+                    Destroy(item);
+                    item = null;
+                    var peel = Instantiate(bananaPeelPrefab);
+                    peel.transform.position = transform.position;
+                } else if (item.name.Contains("vase")) {
+                    Destroy(item);
+                    item = null;
+                    var trash = Instantiate(vaseBrokenPrefab);
+                    trash.transform.position = transform.position;
+                }
+
             }
         }
         if (x != 0 || y != 0) {
@@ -65,18 +75,18 @@ public class PlayerControl : MonoBehaviour {
     void FixedUpdate() {
         if (!mask_exists) {
             if (!scary && Time.time - not_scary_since > TIME_UNTIL_PUMPKIN) {
+                mask_exists = true;
                 var points_ = GameObject.FindGameObjectsWithTag("PathPoint");
                 var point_ = points_[Random.Range(0, points_.Length)];
                 var mask_ = Instantiate(pumpkinPrefab);
                 mask_.transform.position = point_.transform.position;
-                mask_exists = true;
                 new_item_since = Time.time;
             }
         } else {
             if (!item_exists && Time.time - new_item_since > TIME_UNTIL_ITEM) {
                 var points_ = GameObject.FindGameObjectsWithTag("PathPoint");
                 var point_ = points_[Random.Range(0, points_.Length)];
-                var item_ = Instantiate(bananaPrefab);
+                var item_ = Random.Range(0,2) > 0 ? Instantiate(bananaPrefab) : Instantiate(vasePrefab);
                 item_.transform.position = point_.transform.position;
                 item_exists = true;
                 new_item_since = Time.time;
@@ -85,10 +95,10 @@ public class PlayerControl : MonoBehaviour {
     }
 
     public void MarkAsNotScary() {
-        scary = false;
-        not_scary_since = Time.time;
         Destroy(mask);
         mask = null;
+        scary = false;
+        not_scary_since = Time.time;
         mask_exists = false;
     }
 
@@ -101,6 +111,7 @@ public class PlayerControl : MonoBehaviour {
         }
         if (collider.gameObject.CompareTag("Item")) {
             item = collider.gameObject;
+            Debug.Log("Picked up " + item.name);
             item.transform.parent = transform;
             item.transform.localPosition = new(0, 0);
         }

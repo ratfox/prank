@@ -1274,6 +1274,8 @@ MonoBehaviour:
   pumpkinPrefab: {fileID: 5082958546597265177, guid: 4a4a1ee154ee74318a59975082ad1d64, type: 3}
   bananaPrefab: {fileID: 6132959614888111519, guid: 51925dd4d61d44b2cb4dae9260929e5c, type: 3}
   bananaPeelPrefab: {fileID: 3764578614440071814, guid: 25a050a4a593e4faeaaeed00057dde3f, type: 3}
+  vasePrefab: {fileID: 2225819281066878293, guid: a5e1761cd5457419496259129c073e9f, type: 3}
+  vaseBrokenPrefab: {fileID: 2744902597952055022, guid: 8e4d5565a54dd420999cd4950ef194de, type: 3}
   mask: {fileID: 0}
   item: {fileID: 0}
 --- !u!212 &2068053240
