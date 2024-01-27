@@ -117,14 +117,10 @@ public class VictimControl : MonoBehaviour {
         }
     }
 
-    private void OnCollisionStay2D(Collision2D collision) {
+    void FixedUpdate() {
         if (direction == Vector2.zero) {
             direction = GetRandomDirection();
         }
-    }
-
-
-    void FixedUpdate() {
         if (scared) {
             if (Time.time - scared_since > SCARED_SECONDS) {
                 scared = false;
