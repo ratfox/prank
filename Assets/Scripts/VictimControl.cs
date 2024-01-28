@@ -72,6 +72,7 @@ public class VictimControl : MonoBehaviour {
     }
 
     void updatePic() {
+
         if (direction == Vector2.up) {
             animator.SetBool("is_back", true);
             animator.SetBool("is_front", false);
@@ -84,10 +85,10 @@ public class VictimControl : MonoBehaviour {
         }
         animator.SetBool("is_front", false);
         animator.SetBool("is_back", false);
-        if (direction == Vector2.left) {
+        if (direction.x < 0) {
             sprite.flipX = true;
         }
-        if (direction == Vector2.right) {
+        if (direction.x > 0) {
             sprite.flipX = false;
         }
     }
@@ -97,6 +98,11 @@ public class VictimControl : MonoBehaviour {
         updatePic();
         speed = stunned ? 0 : scared ? SCARED_SPEED : DEFAULT_SPEED;
         transform.Translate(direction * speed * Time.deltaTime);
+    }
+
+    public void Attract(Vector3 target) {
+        direction = target - transform.position; 
+        direction.Normalize();
     }
 
     private void OnCollisionEnter2D(Collision2D collision) {
