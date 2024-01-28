@@ -14,6 +14,7 @@ public class VictimControl : MonoBehaviour {
     public float x = 0;
     public AudioClip scaredClip;
     private AudioSource scaredSource;
+    private AudioSource boingSource;
     public float y = 0;
     public float distance_view = 0;
     public bool debug = false;
@@ -32,6 +33,7 @@ public class VictimControl : MonoBehaviour {
         animator = GetComponent<Animator>();   
         my_collider = GetComponent<BoxCollider2D>();
         player = GameObject.Find("Player"); 
+        boingSource = GetComponent<AudioSource>();
         scaredSource = gameObject.AddComponent<AudioSource>();
         scaredSource.clip = scaredClip;
         scaredSource.volume = 0.4f;
@@ -163,6 +165,8 @@ public class VictimControl : MonoBehaviour {
     }
 
     private void getStunned() {
+        boingSource.time = 1f;
+        boingSource.Play();
         stunned = true;
         animator.SetBool("is_stunned", true);
         Destroy(Instantiate(explosionPrefab, transform.position, transform.rotation), 0.9f);
