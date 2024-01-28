@@ -36,8 +36,8 @@ public class VictimControl : MonoBehaviour {
         my_collider = GetComponent<BoxCollider2D>();
         player = GameObject.Find("Player");
         boingSource = GetComponent<AudioSource>();
-        audioSource = gameObject.AddComponent<AudioSource>();
         direction = GetRandomDirection();
+        audioSource = gameObject.AddComponent<AudioSource>();
     }
     
     Vector2 GetRandomDirection() {
@@ -101,7 +101,6 @@ public class VictimControl : MonoBehaviour {
     }
 
     private void OnCollisionEnter2D(Collision2D collision) {
-        Debug.Log("Collision");
         if (!my_collider.enabled) {
             return;
         }
@@ -135,8 +134,7 @@ public class VictimControl : MonoBehaviour {
                 animator.SetBool("is_scared", false);
                 var points_ = GameObject.FindGameObjectsWithTag("PathPoint");
                 var point_ = points_[Random.Range(0, points_.Length)];
-                var victim_ = Instantiate(victimPrefab);
-                victim_.transform.position = point_.transform.position;
+                Instantiate(victimPrefab, point_.transform.position, transform.rotation);
             }
             return;
         }
