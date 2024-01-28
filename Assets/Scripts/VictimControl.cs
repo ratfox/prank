@@ -152,15 +152,15 @@ public class VictimControl : MonoBehaviour {
             }
             return;
         }
+        var dir_player =  player.transform.position - transform.position;
         // Calculate the distance from the player
         float distance = Vector2.Distance(player.transform.position, transform.position);
-        var dir_player =  player.transform.position - transform.position;
         if (distance < MIN_SCARY_DISTANCE &&
                 player.GetComponent<PlayerControl>().scary &&
                 player.GetComponent<PlayerControl>().booSource.isPlaying) {
             getScared(dir_player);
         }
-        if (Vector2.Angle(dir_player, direction) < 15) {
+        if (Vector2.Angle(dir_player, direction) < 65) {
         RaycastHit2D hit = Physics2D.Raycast(transform.position, dir_player, VISION_DISTANCE);
             if (hit.collider != null && hit.collider.gameObject.CompareTag("Player")) {
                 if (distance < MIN_SCARY_DISTANCE && player.GetComponent<PlayerControl>().scary) {
