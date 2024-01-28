@@ -61,6 +61,10 @@ public class PlayerControl : MonoBehaviour {
         if (mask != null) {
             mask.GetComponent<SpriteRenderer>().flipX = sprite.flipX;
         }
+        if (item != null) {
+            item.transform.localPosition = new(sprite.flipX ? -0.2f: 0.2f, 0);
+        }
+
     }
 
     private void Move(float x, float y) {
@@ -95,11 +99,13 @@ public class PlayerControl : MonoBehaviour {
     }
 
     public void MarkAsNotScary() {
-        Destroy(mask);
-        mask = null;
         scary = false;
         not_scary_since = Time.time;
-        mask_exists = false;
+        if (mask != null) {
+            Destroy(mask);
+            mask = null;
+            mask_exists = false;
+        }
     }
 
     private void OnTriggerEnter2D(Collider2D collider) {
@@ -111,9 +117,8 @@ public class PlayerControl : MonoBehaviour {
         }
         if (collider.gameObject.CompareTag("Item")) {
             item = collider.gameObject;
-            Debug.Log("Picked up " + item.name);
             item.transform.parent = transform;
-            item.transform.localPosition = new(0, 0);
+            item.transform.localPosition = new(sprite.flipX ? -0.2f: 0.2f, 0);
         }
     }    
 }

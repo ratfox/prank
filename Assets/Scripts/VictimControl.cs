@@ -3,7 +3,7 @@ using UnityEngine;
 public class VictimControl : MonoBehaviour {
     const int SCARED_SECONDS = 2;
     const float DEFAULT_SPEED = 1.5f;
-    const float SCARED_SPEED = 2.5f;
+    const float SCARED_SPEED = 3f;
     const float MIN_SCARY_DISTANCE = 2.5f;
     const int MIN_WALK_DISTANCE = 3;
     const int VISION_DISTANCE = 5;
@@ -102,7 +102,6 @@ public class VictimControl : MonoBehaviour {
         if (!my_collider.enabled) {
             return;
         }
-        Debug.Log("intersection");
         direction = GetRandomDirection();
         if (collision.gameObject.CompareTag("Victim")) {
             if (collision.gameObject.GetComponent<VictimControl>().scared) {
@@ -157,13 +156,14 @@ public class VictimControl : MonoBehaviour {
                 player.GetComponent<PlayerControl>().booSource.isPlaying) {
             getScared(dir_player);
         }
-        RaycastHit2D hit = Physics2D.Raycast(transform.position, direction, VISION_DISTANCE);
-        if (hit.collider != null && hit.collider.gameObject.CompareTag("Player")) {
-            Debug.Log("distance " + distance);
-            if (distance < MIN_SCARY_DISTANCE && player.GetComponent<PlayerControl>().scary) {
-                getScared(dir_player);
-            } else {
-                markPlayerAsNotScary();
+        if (Vector2.Angle(dir_player, direction) < 15) {
+        RaycastHit2D hit = Physics2D.Raycast(transform.position, dir_player, VISION_DISTANCE);
+            if (hit.collider != null && hit.collider.gameObject.CompareTag("Player")) {
+                if (distance < MIN_SCARY_DISTANCE && player.GetComponent<PlayerControl>().scary) {
+                    getScared(dir_player);
+                } else {
+                    markPlayerAsNotScary();
+                }
             }
         }
     }
