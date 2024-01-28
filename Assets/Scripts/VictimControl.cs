@@ -34,7 +34,7 @@ public class VictimControl : MonoBehaviour {
         player = GameObject.Find("Player"); 
         scaredSource = gameObject.AddComponent<AudioSource>();
         scaredSource.clip = scaredClip;
-        scaredSource.volume = 0.2f;
+        scaredSource.volume = 0.01f;
         direction = GetRandomDirection();
     }
     
