@@ -117,7 +117,7 @@ MonoBehaviour:
   scared_since: 0
   stunned: 0
   stunned_since: 0
-  debug_object: {fileID: 0}
+  explosionPrefab: {fileID: 9069412309392663215, guid: a3f2468647c8a44f1a3c135a7c255ece, type: 3}
 --- !u!61 &5282416191875701666
 BoxCollider2D:
   m_ObjectHideFlags: 0
