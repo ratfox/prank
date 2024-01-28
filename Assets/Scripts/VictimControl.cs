@@ -175,7 +175,7 @@ public class VictimControl : MonoBehaviour {
 
     private void getScared(Vector2 dir_player) {
         audioSource.clip = scaredClip;
-        audioSource.volume = 0.01f;
+        audioSource.volume = 0.05f;
         audioSource.Play();
         scared = true;
         animator.SetBool("is_scared", true);
