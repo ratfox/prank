@@ -13,6 +13,10 @@ public class VaseBrokenControl : MonoBehaviour
         player = GameObject.Find("Player");
         timeSinceExists = Time.time;
         Destroy(Instantiate(explosionPrefab, transform), 0.9f);
+        var victims = GameObject.FindGameObjectsWithTag("Victim");
+        foreach (var victim in victims) {
+            victim.GetComponent<VictimControl>().Attract(transform.position);
+        }
     }
 
     // Update is called once per frame

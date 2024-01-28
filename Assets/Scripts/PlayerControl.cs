@@ -10,6 +10,8 @@ public class PlayerControl : MonoBehaviour {
     public AudioSource booSource;
     public bool mask_exists = false;
     public bool item_exists = false;
+    public bool notScarySoon = false;
+    public float notScaryFrom;
     public GameObject pumpkinPrefab;
     public GameObject bananaPrefab;
     public GameObject bananaPeelPrefab;
@@ -96,12 +98,17 @@ public class PlayerControl : MonoBehaviour {
                 new_item_since = Time.time;
             }
         }
+        if (notScarySoon && Time.time > notScaryFrom) {
+            notScarySoon = false;
+            scary = false;
+            not_scary_since = Time.time;
+            removeMaskPicture();
+        }
     }
 
     public void MarkAsNotScary() {
-        scary = false;
-        not_scary_since = Time.time;
-        removeMaskPicture();
+        notScaryFrom = Time.time + 0.1f;
+        notScarySoon = true;
     }
 
     public void removeMaskPicture() {
