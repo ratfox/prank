@@ -13,8 +13,9 @@ public class VictimControl : MonoBehaviour {
     public GameObject player = null;
     public float x = 0;
     public AudioClip scaredClip;
-    private AudioSource scaredSource;
     private AudioSource boingSource;
+    public AudioClip[] notScary;
+    private AudioSource audioSource;
     public float y = 0;
     public float distance_view = 0;
     public bool debug = false;
@@ -34,9 +35,7 @@ public class VictimControl : MonoBehaviour {
         my_collider = GetComponent<BoxCollider2D>();
         player = GameObject.Find("Player"); 
         boingSource = GetComponent<AudioSource>();
-        scaredSource = gameObject.AddComponent<AudioSource>();
-        scaredSource.clip = scaredClip;
-        scaredSource.volume = 0.4f;
+        audioSource = gameObject.AddComponent<AudioSource>();
         direction = GetRandomDirection();
     }
     
@@ -111,7 +110,7 @@ public class VictimControl : MonoBehaviour {
             }
         }
         if (collision.gameObject.CompareTag("Player")) {
-            markPlayerAsNotScary();
+            markPlayerAsNotScary(true);
         }
     }
 
@@ -158,7 +157,7 @@ public class VictimControl : MonoBehaviour {
                 if (distance < MIN_SCARY_DISTANCE && player.GetComponent<PlayerControl>().scary) {
                     getScared(dir_player);
                 } else {
-                    markPlayerAsNotScary();
+                    markPlayerAsNotScary(true);
                 }
             }
         }
@@ -175,14 +174,28 @@ public class VictimControl : MonoBehaviour {
     }
 
     private void getScared(Vector2 dir_player) {
-        scaredSource.Play();
+        audioSource.clip = scaredClip;
+        audioSource.volume = 0.01f;
+        audioSource.Play();
         scared = true;
         animator.SetBool("is_scared", true);
         scared_since = Time.time;
-        markPlayerAsNotScary();
+        markPlayerAsNotScary(false);
     }
 
-    private void markPlayerAsNotScary() {
+    private void markPlayerAsNotScary(bool with_sound) {
+        if (!player.GetComponent<PlayerControl>().scary) {
+            return;
+        }
         player.GetComponent<PlayerControl>().MarkAsNotScary();
+        if (!with_sound) {
+            return;
+        }
+        // Get a random index within the array length
+        int randomIndex = Random.Range(0, notScary.Length);
+        // Assign the randomly selected audio clip to the AudioSource
+        audioSource.clip = notScary[randomIndex];
+        audioSource.volume = 1f;
+        audioSource.Play();
     }
 }
