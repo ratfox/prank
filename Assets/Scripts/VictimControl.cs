@@ -21,7 +21,7 @@ public class VictimControl : MonoBehaviour {
     public float scared_since;
     public bool stunned = false;
     public float stunned_since;
-    public GameObject debug_object = null;
+    public GameObject explosionPrefab;
     SpriteRenderer sprite;
     Animator animator;
     Collider2D my_collider;
@@ -105,10 +105,7 @@ public class VictimControl : MonoBehaviour {
         direction = GetRandomDirection();
         if (collision.gameObject.CompareTag("Victim")) {
             if (collision.gameObject.GetComponent<VictimControl>().scared) {
-                stunned = true;
-                animator.SetBool("is_stunned", true);
-                stunned_since = Time.time;
-                my_collider.enabled = false;
+                getStunned();
             }
         }
         if (collision.gameObject.CompareTag("Player")) {
@@ -118,10 +115,7 @@ public class VictimControl : MonoBehaviour {
 
     private void OnTriggerEnter2D(Collider2D collider) {
         if (scared && collider.gameObject.CompareTag("Trap")) {
-            stunned = true;
-            animator.SetBool("is_stunned", true);
-            stunned_since = Time.time;
-            my_collider.enabled = false;
+            getStunned();
             Destroy(collider.gameObject);
             player.GetComponent<PlayerControl>().item_exists = false;
             player.GetComponent<PlayerControl>().new_item_since = Time.time;
@@ -166,6 +160,14 @@ public class VictimControl : MonoBehaviour {
                 }
             }
         }
+    }
+
+    private void getStunned() {
+        stunned = true;
+        animator.SetBool("is_stunned", true);
+        Destroy(Instantiate(explosionPrefab, transform.position, transform.rotation), 0.9f);
+        stunned_since = Time.time;
+        my_collider.enabled = false;
     }
 
     private void getScared(Vector2 dir_player) {
