@@ -105,6 +105,7 @@ MonoBehaviour:
   direction: {x: 0, y: 0}
   player: {fileID: 0}
   x: 0
+  boingClip: {fileID: 8300000, guid: 634eddfbe11434ce7a0a8526af8a65f1, type: 3}
   scaredClip: {fileID: 8300000, guid: be16c7069ba9d4f60ad522d2bcfb6820, type: 3}
   notScary:
   - {fileID: 8300000, guid: 2a775b1461e104075b2baf83f5b9600d, type: 3}

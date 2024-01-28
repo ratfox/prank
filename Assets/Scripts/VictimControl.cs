@@ -12,10 +12,10 @@ public class VictimControl : MonoBehaviour {
     public Vector2 direction;
     public GameObject player = null;
     public float x = 0;
+    public AudioClip boingClip;
     public AudioClip scaredClip;
     private AudioSource boingSource;
     public AudioClip[] notScary;
-    public AudioSource audioSource;
     public float y = 0;
     public float distance_view = 0;
     public bool scared = false;
@@ -37,7 +37,6 @@ public class VictimControl : MonoBehaviour {
         player = GameObject.Find("Player");
         boingSource = GetComponent<AudioSource>();
         direction = GetRandomDirection();
-        audioSource = gameObject.AddComponent<AudioSource>();
     }
     
     Vector2 GetRandomDirection() {
@@ -168,6 +167,7 @@ public class VictimControl : MonoBehaviour {
     }
 
     private void getStunned() {
+        boingSource.clip = boingClip;
         boingSource.time = 1f;
         boingSource.Play();
         stunned = true;
@@ -178,9 +178,9 @@ public class VictimControl : MonoBehaviour {
     }
 
     private void getScared(Vector2 dir_player) {
-        audioSource.clip = scaredClip;
-        audioSource.volume = 0.05f;
-        audioSource.Play();
+        boingSource.clip = scaredClip;
+        boingSource.volume = 0.05f;
+        boingSource.Play();
         scared = true;
         Debug.Log("How scary");
         animator.SetBool("is_scared", true);
@@ -199,8 +199,8 @@ public class VictimControl : MonoBehaviour {
         // Get a random index within the array length
         int randomIndex = Random.Range(0, notScary.Length);
         // Assign the randomly selected audio clip to the AudioSource
-        audioSource.clip = notScary[randomIndex];
-        audioSource.volume = 1f;
-        audioSource.Play();
+        boingSource.clip = notScary[randomIndex];
+        boingSource.volume = 1f;
+        boingSource.Play();
     }
 }
