@@ -101,6 +101,10 @@ public class PlayerControl : MonoBehaviour {
     public void MarkAsNotScary() {
         scary = false;
         not_scary_since = Time.time;
+        removeMaskPicture();
+    }
+
+    public void removeMaskPicture() {
         if (mask != null) {
             Destroy(mask);
             mask = null;
