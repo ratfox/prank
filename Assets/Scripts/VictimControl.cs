@@ -15,25 +15,26 @@ public class VictimControl : MonoBehaviour {
     public AudioClip scaredClip;
     private AudioSource boingSource;
     public AudioClip[] notScary;
-    private AudioSource audioSource;
+    public AudioSource audioSource;
     public float y = 0;
     public float distance_view = 0;
-    public bool debug = false;
     public bool scared = false;
     public float scared_since;
     public bool stunned = false;
     public float stunned_since;
     public GameObject explosionPrefab;
+    public GameObject victimPrefab;
     SpriteRenderer sprite;
     Animator animator;
     Collider2D my_collider;
 
     // Start is called before the first frame update
     void Start() {
+        Debug.Log("STARTING VICTIM " + gameObject.name);
         sprite = GetComponent<SpriteRenderer>();   
         animator = GetComponent<Animator>();   
         my_collider = GetComponent<BoxCollider2D>();
-        player = GameObject.Find("Player"); 
+        player = GameObject.Find("Player");
         boingSource = GetComponent<AudioSource>();
         audioSource = gameObject.AddComponent<AudioSource>();
         direction = GetRandomDirection();
@@ -100,6 +101,7 @@ public class VictimControl : MonoBehaviour {
     }
 
     private void OnCollisionEnter2D(Collision2D collision) {
+        Debug.Log("Collision");
         if (!my_collider.enabled) {
             return;
         }
@@ -131,6 +133,10 @@ public class VictimControl : MonoBehaviour {
             if (Time.time - scared_since > SCARED_SECONDS) {
                 scared = false;
                 animator.SetBool("is_scared", false);
+                var points_ = GameObject.FindGameObjectsWithTag("PathPoint");
+                var point_ = points_[Random.Range(0, points_.Length)];
+                var victim_ = Instantiate(victimPrefab);
+                victim_.transform.position = point_.transform.position;
             }
             return;
         }
@@ -178,6 +184,7 @@ public class VictimControl : MonoBehaviour {
         audioSource.volume = 0.05f;
         audioSource.Play();
         scared = true;
+        Debug.Log("How scary");
         animator.SetBool("is_scared", true);
         scared_since = Time.time;
         markPlayerAsNotScary(false);

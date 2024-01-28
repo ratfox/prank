@@ -111,14 +111,15 @@ MonoBehaviour:
   - {fileID: 8300000, guid: 957eaa696976b47ea9cae9fdb141035b, type: 3}
   - {fileID: 8300000, guid: 9cdaac554c62d492888be2325b5b0511, type: 3}
   - {fileID: 8300000, guid: c8299bfd80e904da4b59f0edc03315d0, type: 3}
+  audioSource: {fileID: 0}
   y: 0
   distance_view: 0
-  debug: 0
   scared: 0
   scared_since: 0
   stunned: 0
   stunned_since: 0
   explosionPrefab: {fileID: 9069412309392663215, guid: a3f2468647c8a44f1a3c135a7c255ece, type: 3}
+  victimPrefab: {fileID: 80433414617322273}
 --- !u!61 &5282416191875701666
 BoxCollider2D:
   m_ObjectHideFlags: 0
